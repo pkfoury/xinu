@@ -592,6 +592,9 @@ extern	void	udp_hton(struct netpacket *);
 /* in file unsleep.c */
 extern	syscall	unsleep(pid32);
 
+/* in file uprintf.c */
+extern	syscall uprintf(char *, ...);
+
 /* in file userret.c */
 extern	void	userret(void);
 
