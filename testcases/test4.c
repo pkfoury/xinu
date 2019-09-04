@@ -7,9 +7,9 @@ bool8 go = FALSE;
 process	main(void)
 {
 	pid32 a, b, c;
-	resume(a = create(type, INITSTK, 10, "Print A", 1, 'A'));
-	resume(b = create(type, INITSTK, 10, "Print B", 1, 'B'));
-	resume(c = create(type, INITSTK, 10, "Print C", 1, 'C'));
+	a = create(type, 256, 10, "Print A", 1, 'A');
+	b = create(type, 256, 10, "Print B", 1, 'B');
+	c = create(type, 256, 10, "Print C", 1, 'C');
 	resume(a);
 	resume(b);
 	resume(c);
