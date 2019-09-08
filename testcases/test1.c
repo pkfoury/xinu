@@ -2,11 +2,13 @@
 
 #include <xinu.h>
 
-process	main(void)
-{
+bool8 go = FALSE;
 
-	resume(create(kerneltype, 256, INITPRIO, "Print A", 1, 'A'));
-	resume(create(kerneltype, 256, INITPRIO, "Print B", 1, 'B'));
-	resume(create(kerneltype, 256, INITPRIO, "Print C", 1, 'C'));
-    
+process main(void)
+{
+	resume(create(kerneltype, 256, 10, "Print A", 1, 'A'));
+	resume(create(kerneltype, 256, 10, "Print B", 1, 'B'));
+	resume(create(kerneltype, 256, 10, "Print C", 1, 'C'));
+
+	go = TRUE;
 }

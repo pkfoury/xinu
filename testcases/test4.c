@@ -1,10 +1,10 @@
-/*  test0.c  - main */
+/*  test4.c  - main */
 
 #include <xinu.h>
 
 bool8 go = FALSE;
 
-process	main(void)
+process main(void)
 {
 	pid32 a, b, c;
 	a = create(type, 256, 10, "Print A", 1, 'A');
@@ -16,6 +16,6 @@ process	main(void)
 	tlimit(a, 10);
 	tlimit(b, 10);
 	tlimit(c, 10);
-  go = TRUE;
 
+	go = TRUE;
 }
