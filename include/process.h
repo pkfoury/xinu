@@ -21,6 +21,7 @@
 
 #define	PNMLEN		16	/* Length of process "name"		*/
 #define	NULLPROC	0	/* ID of the null process		*/
+#define debugsched 1 // print debug message when terminating a process
 
 /* Process initialization constants */
 
@@ -52,6 +53,7 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
+	uint32 nslices; // number of slices to be consumed
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

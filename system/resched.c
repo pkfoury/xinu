@@ -23,6 +23,11 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	/* Point to process table entry for the current (old) process */
 
 	ptold = &proctab[currpid];
+	if(ptold->nslices == 0) {
+		if(debugsched) kprintf("Terminating PID=%d with nslices=%d\n", currpid, ptold->nslices);
+		kill(currpid);
+	}
+	ptold->nslices = ptold->nslices - 1;
 
 	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
 		if (ptold->prprio > firstkey(readylist)) {

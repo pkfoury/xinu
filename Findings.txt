@@ -1,0 +1,9 @@
+Part 1 - printer.c
+
+Each function behaves differently:
+	type() - letters are printed in a seemingly random order. this function is not polled and simply sends the char to the I/O device. it misses characters.
+	kerneltype() - every letter is printed in order since this is polled I/O. each letter is printed until the next is context switched in. there is no break in the order. 
+	print() - prints the 50 char strings in order, ABC.
+	kernelprint() - interrupts are not disabled for the entire string but only for each character. They print in order but not the same number of times.
+
+We made the printf functions only print one string of 50 chars at a time to ensure they'd run for their time slice.

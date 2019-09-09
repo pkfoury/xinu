@@ -263,6 +263,9 @@ extern	status	lfsetup(struct lflcblk *);
 /* in file lftruncate.c */
 extern	status	lftruncate(struct lflcblk *);
 
+// limit.c
+extern	syscall	tlimit(pid32 pid, uint32 limit);
+
 /* in file lpgetc.c */
 extern	devcall	lpgetc(struct dentry *);
 
@@ -329,6 +332,13 @@ extern	void	pdumph(struct netpacket *);
 
 /* in file platinit.c */
 extern	void	platinit(void);
+
+/* printer.c */
+extern	void	type(char c);
+extern	void	kerneltype(char c);
+extern	void	print(char c);
+extern	void	kernelprint(char c);
+extern	bool8	go;
 
 /* in file ptclear.c */
 extern	void	_ptclear(struct ptentry *, uint16, int32 (*)(int32));

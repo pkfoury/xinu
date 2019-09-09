@@ -1,23 +1,21 @@
-/*  main.c  - main */
+/*  test7.c  - main */
 
 #include <xinu.h>
 
-process	main(void)
+bool8 go = FALSE;
+
+process main(void)
 {
+	pid32 a, b, c;
+	a = create(kernelprint, 256, 10, "Print A", 1, 'A');
+	b = create(kernelprint, 256, 10, "Print B", 1, 'B');
+	c = create(kernelprint, 256, 10, "Print C", 1, 'C');
+	resume(a);
+	resume(b);
+	resume(c);
+	tlimit(a, 10);
+	tlimit(b, 10);
+	tlimit(c, 10);
 
-	/* Run the Xinu shell */
-
-	recvclr();
-	resume(create(shell, 8192, 50, "shell", 1, CONSOLE));
-
-	/* Wait for shell to exit and recreate it */
-
-	while (TRUE) {
-		receive();
-		sleepms(200);
-		kprintf("\n\nMain process recreating shell\n\n");
-		resume(create(shell, 4096, 20, "shell", 1, CONSOLE));
-	}
-	return OK;
-    
+	go = TRUE;
 }
