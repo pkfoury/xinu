@@ -320,6 +320,15 @@ extern	syscall	open(did32, char *, char *);
 /* in file panic.c */
 extern	void	panic(char *);
 
+/* in file pc.c */
+extern	void	produce(char, uint8);
+extern	void	consume(uint8);
+extern	void	produce_consume_init(void);
+extern	void	create_producer(char, uint8);
+extern	void	create_consumer(uint8);
+extern	void	produce_consume_destroy(void);
+
+
 /* in file pci.c */
 extern	int32	pci_init(void);
 
@@ -422,6 +431,11 @@ extern	umsg32	recvtime(int32);
 /* in file resched.c */
 extern	void	resched(void);
 extern	status	resched_cntl(int32);
+
+/* in file rw.c */
+extern	void	read_lock(uint8);
+extern	void	write_lock(uint8);
+extern	uint8	create_lock(void);
 
 /* in file intr.S */
 extern	void	restore(intmask);
@@ -591,6 +605,9 @@ extern	void	udp_hton(struct netpacket *);
 
 /* in file unsleep.c */
 extern	syscall	unsleep(pid32);
+
+/* in file uprintf.c */
+extern	syscall uprintf(char *, ...);
 
 /* in file userret.c */
 extern	void	userret(void);
