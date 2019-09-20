@@ -300,6 +300,8 @@ extern	bpid32	mkbufpool(int32, int32);
 extern	syscall	mount(char *, char *, did32);
 extern	int32	namlen(char *, int32);
 
+extern void mutex_init(void);
+
 /* in file naminit.c */
 extern	status	naminit(void);
 
