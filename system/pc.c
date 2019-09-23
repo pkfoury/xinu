@@ -22,10 +22,19 @@ pid32 consumers[MAXCONSUMERS];
  */
 void produce(
 		char c,
-		uint8 quantity
-	)
+		uint8 quantity)
 {
-	//TODO: safely produce a character and place it in the buffer, track number of characters produced and index into the buffer.
+	// safely produce a character and place it in the buffer, track number of characters produced and index into the buffer.
+	int i;
+	for (i = 0; i < quantity; i++)
+	{
+		if (producer_index >= PCBUFFER)
+			producer_index = 0;
+		wait(producer_sem);
+		buffer[producer_index++] = c;
+		produced++;
+		signal(consumer_sem);
+	}
 }
 
 /*------------------------------------------------------------------------
@@ -33,12 +42,19 @@ void produce(
  *------------------------------------------------------------------------
  */
 void consume(
-		uint8 quantity
-	)
+		uint8 quantity)
 {
-	//TODO: safely consume a character and remove it from the buffer, track number of characters consumed and index into the buffer.
-	char c = 'a';
-	kprintf("%c", c);	//feel free to rename 'c', but print in this format
+	// safely consume a character and remove it from the buffer, track number of characters consumed and index into the buffer.
+	int i;
+	for (i = 0; i < quantity; i++)
+	{
+		wait(consumer_sem);
+		kprintf("%c", buffer[consumer_index]);
+		buffer[consumer_index++] = '\0';
+		consumed++;
+		signal(producer_sem);
+	}
+	kprintf("\n");
 }
 
 /*------------------------------------------------------------------------
@@ -46,10 +62,9 @@ void consume(
  *------------------------------------------------------------------------
  */
 void produce_consume_init(
-		void
-	)
+		void)
 {
-	producer_sem = semcreate(1);
+	producer_sem = semcreate(PCBUFFER);
 	consumer_sem = semcreate(0);
 }
 
@@ -59,13 +74,13 @@ void produce_consume_init(
  */
 void create_producer(
 		char c,
-		uint8 quantity
-	)
+		uint8 quantity)
 {
-	if (nproducers == MAXPRODUCERS) {
+	if (nproducers == MAXPRODUCERS)
+	{
 		return;
 	}
-	producers[nproducers] = create(produce, 512, 10, "Producer", c, quantity);
+	producers[nproducers] = create(produce, 512, 10, "Producer", 2, c, quantity);
 	resume(producers[nproducers]);
 	nproducers++;
 }
@@ -75,13 +90,13 @@ void create_producer(
  *------------------------------------------------------------------------
  */
 void create_consumer(
-		uint8 quantity
-	)
+		uint8 quantity)
 {
-	if (nconsumers == MAXCONSUMERS) {
+	if (nconsumers == MAXCONSUMERS)
+	{
 		return;
 	}
-	consumers[nconsumers] = create(consume, 512, 10, "Consumer", quantity);
+	consumers[nconsumers] = create(consume, 512, 10, "Consumer", 1, quantity);
 	resume(consumers[nconsumers]);
 	nconsumers++;
 }
@@ -91,23 +106,48 @@ void create_consumer(
  *------------------------------------------------------------------------
  */
 void produce_consume_destroy(
-		void
-	)
+		void)
 {
-	wait(producer_sem);
 	uint8 i;
-	for (i = 0; i < nproducers; i++) {
+	for (i = 0; i < nproducers; i++)
+	{
 		kill(producers[i]);
 	}
-	for (i = 0; i < nconsumers; i++) {
+	for (i = 0; i < nconsumers; i++)
+	{
 		kill(consumers[i]);
 	}
 	semdelete(producer_sem);
 	semdelete(consumer_sem);
+
+	uint32 leftover;
+
+	// the buffer is full or empty
+	if (producer_index == consumer_index)
+	{
+		if (produced == consumed + PCBUFFER)
+		{
+			leftover = PCBUFFER;
+		}
+		else
+		{
+			leftover = 0;
+		}
+	}
+	else if (producer_index < consumer_index)
+	{
+		leftover = producer_index + (PCBUFFER - consumer_index);
+	}
+	else
+	{
+		leftover = producer_index - consumer_index;
+	}
+
 	kprintf("Produced %d characters, consumed %d characters, %d leftover.\n",
-		produced, consumed, producer_index - consumer_index);
+					produced, consumed, leftover);
 	kprintf("Leftovers:\n");
-	for (i = 0; i < PCBUFFER; i++) {
+	for (i = 0; i < PCBUFFER; i++)
+	{
 		kprintf("%c", buffer[i]);
 	}
 }
