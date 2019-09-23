@@ -1,23 +1,19 @@
-/*  main.c  - main */
+/*  test5.c  - test5 */
 
 #include <xinu.h>
 
-process	main(void)
+/*------------------------------------------------------------------------
+ * Three processes, A adds 1 to the sum 200 times, B adds 10 200 times, and C adds 100 200 times.
+ * Expected sum: 22200 at the end.
+ *------------------------------------------------------------------------
+ */
+process main(void)
 {
+    mutex_init();
+    resume(create(monitor, 512, 100, "Monitor Process", 0, NULL));
+    resume(create(incrementer, 512, 10, "Incrementer A", 2, 1, 200));
+    resume(create(incrementer, 512, 10, "Incrementer B", 2, 10, 200));
+    resume(create(incrementer, 512, 10, "Incrementer C", 2, 100, 200));
 
-	/* Run the Xinu shell */
-
-	recvclr();
-	resume(create(shell, 8192, 50, "shell", 1, CONSOLE));
-
-	/* Wait for shell to exit and recreate it */
-
-	while (TRUE) {
-		receive();
-		sleepms(200);
-		kprintf("\n\nMain process recreating shell\n\n");
-		resume(create(shell, 4096, 20, "shell", 1, CONSOLE));
-	}
-	return OK;
-    
+    return OK;
 }

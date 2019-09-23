@@ -1,0 +1,5 @@
+## Lab 2
+
+The producer is initialized to count N because we are treating this as a "resources avalable" semaphore. We start with an empty buffer, therefore we have N available pockets to fill. The consumer is initialized to 0 so that it waits for the producer to signal that content is available. Once it is incremented to M, the consumer can consume M times before waiting again.
+
+

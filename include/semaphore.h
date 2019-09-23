@@ -27,7 +27,9 @@ extern	struct	sentry semtab[];
 
 /* Read-Write lock table entry */
 struct	lock	{
-	
+	byte state;
+	bool8 locked; // TRUE or FALSE locked
+	qid16 lqueue; // queue of processes waiting on mutex
 };
 
 extern	struct	lock	locktab[];
