@@ -26,6 +26,8 @@ extern	struct	memblk	memlist;	/* Head of free memory list	*/
 extern	void	*minheap;		/* Start of heap		*/
 extern	void	*maxheap;		/* Highest valid heap address	*/
 
+#define MEMCACHEMAX	20
+
 
 /* Added by linker */
 
