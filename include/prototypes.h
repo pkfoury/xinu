@@ -296,6 +296,10 @@ extern  void    *memset(void *, const int, int32);
 /* in file mkbufpool.c */
 extern	bpid32	mkbufpool(int32, int32);
 
+extern	void		mymeminit(void);
+extern	char 		*mygetmem(uint32);
+extern	syscall	myfreemem(char *, uint32);
+
 /* in file mount.c */
 extern	syscall	mount(char *, char *, did32);
 extern	int32	namlen(char *, int32);
