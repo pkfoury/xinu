@@ -2,22 +2,28 @@
 
 #include <xinu.h>
 
-process	main(void)
-{
+volatile int debugmem = 0;
 
-	/* Run the Xinu shell */
+process main(void) {
+  int i = 0, size = 8;
+  debugmem = 1;
+  mymeminit();
 
-	recvclr();
-	resume(create(shell, 8192, 50, "shell", 1, CONSOLE));
+  for (i = 0; i < 20; i++) {
+    if (myfreemem(mygetmem(size), size) == SYSERR) {
+      uprintf("Failed to allocate / free memory \n");
+    }
+  }
 
-	/* Wait for shell to exit and recreate it */
+  // char * res = mygetmem(size);
+  // kprintf("initial getmem\n");
 
-	while (TRUE) {
-		receive();
-		sleepms(200);
-		kprintf("\n\nMain process recreating shell\n\n");
-		resume(create(shell, 4096, 20, "shell", 1, CONSOLE));
-	}
-	return OK;
-    
+  // uint32 status = myfreemem(res, size);
+  // kprintf("freemem %d\n", status);
+
+  // res = mygetmem(size);
+  // kprintf("getmem 0x%08X\n", res);
+
+
+  return OK;
 }
