@@ -26,18 +26,12 @@ extern	struct	memblk	memlist;	/* Head of free memory list	*/
 extern	void	*minheap;		/* Start of heap		*/
 extern	void	*maxheap;		/* Highest valid heap address	*/
 
-// lab 3 definitions
-struct blocklist { // list for same-size blocks
-	char blockaddr;
-	struct blocklist *next;
+struct memblklist {
+	uint32 blksize;
+	struct memblk *head;
 };
 
-struct memcache { // struct of lists
-	uint32 size;
-	struct blocklist *list;
-};
-
-struct memcache cache[20]; // array of recently used blocks
+extern struct memblklist cache[]; // array of recently used blocks
 
 #define MEMCACHEMAX	20
 
