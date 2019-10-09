@@ -2,6 +2,8 @@
 
 #include <xinu.h>
 
+extern volatile int debugmem;
+
 /*------------------------------------------------------------------------
  *  freemem  -  Free a memory block, returning the block to the free list
  *------------------------------------------------------------------------
@@ -21,6 +23,10 @@ syscall	freemem(
 		restore(mask);
 		return SYSERR;
 	}
+
+    if(debugmem) { 
+        kprintf("\nFreemem: blkaddr %u and size is %u \n", blkaddr, nbytes);
+    }
 
 	nbytes = (uint32) roundmb(nbytes);	/* Use memblk multiples	*/
 	block = (struct memblk *)blkaddr;

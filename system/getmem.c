@@ -2,6 +2,7 @@
 
 #include <xinu.h>
 
+extern volatile int debugmem;
 /*------------------------------------------------------------------------
  *  getmem  -  Allocate heap storage, returning lowest word address
  *------------------------------------------------------------------------
@@ -18,6 +19,10 @@ char  	*getmem(
 		restore(mask);
 		return (char *)SYSERR;
 	}
+
+    if(debugmem) {
+        kprintf("Getmem: nbytes %u \n", nbytes);
+    }
 
 	nbytes = (uint32) roundmb(nbytes);	/* Use memblk multiples	*/
 
