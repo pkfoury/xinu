@@ -18,7 +18,6 @@ char *mygetmem(uint32 nbytes  // size of memory to get
   for (i = 0; i < 20; i++) {
     list = &cache[i];
     if (list->blksize == nbytes) {  // if list exists, get from list
-      kprintf("list found\n");
       block = list->head;
       list->head = block->mnext;
       block->mnext = (struct memblk *)NULL;
@@ -32,15 +31,15 @@ char *mygetmem(uint32 nbytes  // size of memory to get
 
   // if getmem() == SYSERR, clear cache and try again.
   if (mem == (char *)SYSERR) {
-    kprintf("getmem SYSERR\n");
     for (i = 0; i < 20; i++) {
       list = &cache[i];
       list->blksize = 0;
       block = list->head;
       while (block) {
-        freemem((char *)block, block->mlength);
+        freemem((char *)block, nbytes);
         block = block->mnext;
       }
+      list->head = (struct memblk *)NULL;
     }
     mem = getmem(nbytes);
   }

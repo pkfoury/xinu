@@ -25,7 +25,6 @@ syscall myfreemem(char *blkaddr, /* Pointer to memory block	*/
   for (i = 0; i < 20; i++) {
     list = &cache[i];
     if (list->blksize == nbytes || list->blksize == 0) {  // if exact list or empty list exists
-      kprintf("inserting into cache\n");
       if (list->blksize == 0) {
         list->blksize = nbytes;
       }

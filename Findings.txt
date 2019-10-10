@@ -1,0 +1,10 @@
+## Lab 3
+
+These optimizations are useful because freeing blocks is very expensive.
+Memory can become fragmented if memory can be allocated with arbitrary size.
+
+A case that demonstrates the purpose of these optimization: if we need multiple blocks of the same size for a buffer.
+This makes the repeated action easy to maintain.
+
+Other optimization to improve memory allocation:
+	restricting memory allocation to specific sizes and maintaining multiple free lists.
