@@ -38,6 +38,10 @@
 
 #define NDESC		5	/* must be odd to make procent 4N bytes	*/
 
+/* Lab 4 defines */
+
+typedef void (*callback)(umsg32);
+
 /* Definition of the process table (multiple of 32 bits) */
 
 struct procent {		/* Entry in the process table		*/

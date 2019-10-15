@@ -1,4 +1,4 @@
-/* send.c - send */
+/* send.c - send, sendblk */
 
 #include <xinu.h>
 
@@ -37,5 +37,30 @@ syscall	send(
 		ready(pid);
 	}
 	restore(mask);		/* Restore interrupts */
+	return OK;
+}
+
+/*------------------------------------------------------------------------
+ *  sendblk  -  Pass a message to a process and block until it is received
+ *------------------------------------------------------------------------
+ */
+syscall	sendblk(
+	  pid32		pid,		/* ID of recipient process	*/
+	  umsg32	msg		/* Contents of message		*/
+	)
+{
+	return OK;
+}
+
+/*------------------------------------------------------------------------
+ *  sendcallback  -  Pass a message to a process using its callback function
+ *------------------------------------------------------------------------
+ */
+syscall	sendcb(
+		pid32	pid,		/* ID of recipient process	*/
+		umsg32	msg,		/* Contents of message		*/
+		uint32 (* cb) ()	/* Callback pointer			*/
+	)
+{
 	return OK;
 }

@@ -412,6 +412,7 @@ extern	status	ready(pid32);
 
 /* in file receive.c */
 extern	umsg32	receive(void);
+extern	syscall	receivecallback(callback);
 
 /* in file recvclr.c */
 extern	umsg32	recvclr(void);
@@ -512,6 +513,8 @@ extern	syscall	semreset(sid32, int32);
 
 /* in file send.c */
 extern	syscall	send(pid32, umsg32);
+extern	syscall	sendblk(pid32, umsg32);
+extern	syscall	sendcb(pid32, umsg32, uint32 (* cb) ());
 
 /* in file shell.c */
 extern 	process shell(did32);
@@ -591,6 +594,9 @@ extern	void	udp_hton(struct netpacket *);
 
 /* in file unsleep.c */
 extern	syscall	unsleep(pid32);
+
+/* in file uprintf.c */
+extern	syscall uprintf(char *, ...);
 
 /* in file userret.c */
 extern	void	userret(void);

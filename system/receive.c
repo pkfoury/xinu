@@ -23,3 +23,14 @@ umsg32	receive(void)
 	restore(mask);
 	return msg;
 }
+
+/*------------------------------------------------------------------------
+ *  receivecallback - save a callback function to be used by senders
+ *------------------------------------------------------------------------
+ */
+syscall	receivecallback(
+		callback c
+	)
+{
+	return OK;
+}
