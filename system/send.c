@@ -69,6 +69,9 @@ syscall sendblk(
 
 	if (prptr->prstate == PR_RECV) {
 		ready(pid);
+	} else if(prptr->prstate == PR_RECTIM) {
+		unsleep(pid);
+		ready(pid);
 	} else {
 		struct procent *senderproc = &proctab[currpid];
 		prptr->blockedsender = currpid; // store pid of blocked sender
@@ -76,8 +79,6 @@ syscall sendblk(
 		senderproc->prstate = PR_SENDING;
 		resched();
 	}
-
-
 
 	restore(mask); // restore interrupts
 	return OK;

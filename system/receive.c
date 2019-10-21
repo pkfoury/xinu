@@ -23,7 +23,6 @@ umsg32	receive(void)
 	
 	if(prptr->hasblockedsender == TRUE) {
 		prptr->hasblockedsender = FALSE; // reset blocking send for receiving process
-		prptr->blockedsender = NULL;
 		pid32 sender = prptr->blockedsender; // get pid of blocked sender
 		ready(sender);
 	}

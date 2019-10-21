@@ -20,6 +20,13 @@ umsg32	recvclr(void)
 	} else {
 		msg = OK;
 	}
+
+	if(prptr->hasblockedsender == TRUE) {
+		prptr->hasblockedsender = FALSE; // reset blocking send for receiving process
+		pid32 sender = prptr->blockedsender; // get pid of blocked sender
+		ready(sender);
+	}
+
 	restore(mask);
 	return msg;
 }
