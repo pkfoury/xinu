@@ -20,6 +20,14 @@ umsg32	receive(void)
 	}
 	msg = prptr->prmsg;		/* Retrieve message		*/
 	prptr->prhasmsg = FALSE;	/* Reset message flag		*/
+	
+	if(prptr->hasblockedsender == TRUE) {
+		prptr->hasblockedsender = FALSE; // reset blocking send for receiving process
+		prptr->blockedsender = NULL;
+		pid32 sender = prptr->blockedsender; // get pid of blocked sender
+		ready(sender);
+	}
+
 	restore(mask);
 	return msg;
 }

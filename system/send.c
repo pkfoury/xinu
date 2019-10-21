@@ -44,11 +44,42 @@ syscall	send(
  *  sendblk  -  Pass a message to a process and block until it is received
  *------------------------------------------------------------------------
  */
-syscall	sendblk(
-	  pid32		pid,		/* ID of recipient process	*/
-	  umsg32	msg		/* Contents of message		*/
-	)
+syscall sendblk(
+		pid32 pid, /* ID of recipient process	*/
+		umsg32 msg /* Contents of message		*/
+)
 {
+	intmask mask;		/* Saved interrupt mask		*/
+	struct procent *prptr; /* Ptr to process's table entry	*/
+	mask = disable();
+
+	if (isbadpid(pid)) {
+		restore(mask);
+		return SYSERR;
+	}
+
+	prptr = &proctab[pid];
+	if(prptr->prhasmsg) {
+		restore(mask);
+		return SYSERR;
+	}
+
+	prptr->prmsg = msg;			/* Deliver message		*/
+	prptr->prhasmsg = TRUE; /* Indicate message is waiting	*/
+
+	if (prptr->prstate == PR_RECV) {
+		ready(pid);
+	} else {
+		struct procent *senderproc = &proctab[currpid];
+		prptr->blockedsender = currpid; // store pid of blocked sender
+		prptr->hasblockedsender = TRUE;
+		senderproc->prstate = PR_SENDING;
+		resched();
+	}
+
+
+
+	restore(mask); // restore interrupts
 	return OK;
 }
 
