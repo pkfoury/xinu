@@ -59,6 +59,8 @@ struct procent {		/* Entry in the process table		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
 	bool8 hasblockedsender; // process is waiting for blocking send
 	pid32 blockedsender; // pid of blocked sender
+	bool8 hascb; // process has callback registered
+	uint32 (* cb) (); // address of callback function
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

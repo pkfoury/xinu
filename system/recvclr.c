@@ -27,6 +27,13 @@ umsg32	recvclr(void)
 		ready(sender);
 	}
 
+	if(prptr->hascb == TRUE) {
+		if(prptr->cb(msg) != OK) {
+			restore(mask);
+			return SYSERR;
+		};
+	}
+
 	restore(mask);
 	return msg;
 }
