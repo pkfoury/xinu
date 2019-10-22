@@ -1,0 +1,5 @@
+# Lab4
+
+1) Our callback mechanism isn't appropriate for any multi-user system, since anyone is able to register a callback to an arbitrary address. For example, an outside user can register a callback to an address where they have saved malicious code.
+
+2) create() and recvtime() must be modified for the correct implementation.
