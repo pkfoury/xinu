@@ -2,7 +2,7 @@
 
 #define	TY_OBMINSP	20		/* Min space in buffer before	*/
 					/*   processes awakened to write*/
-#define	TY_EBUFLEN	20		/* Size of echo queue		*/
+#define	TY_EBUFLEN	390		/* Size of echo queue		*/
 
 /* Size constants */
 

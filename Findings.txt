@@ -1,0 +1,8 @@
+## Lab 5
+
+1) we enlarge tyebuff because otherwise we are overflowing the echo buffer when there are more than 6 characters.
+	since it takes 3 characters (bksp, blank, bksp), when we have 6 or more characters, the echo buffer wraps around.
+	if we do not enlarge tyebuff, the characters will remain after we type ^U.
+
+2) we want tyebuff to be a multiple of 3. this way, there is enough room to delete all characters in the input buffer
+	since it takes 3 characters to erase one from the echo buffer.
