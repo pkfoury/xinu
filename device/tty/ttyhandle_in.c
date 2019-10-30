@@ -94,15 +94,12 @@ void	ttyhandle_in (
 	} else {	/* Just cooked mode (see common code above) */
 
 		/* Line kill character arrives - kill entire line */
-
+		
 		if (ch == typtr->tyikillc && typtr->tyikill) {
-			typtr->tyitail -= typtr->tyicursor;
-			if (typtr->tyitail < typtr->tyibuff) {
-				typtr->tyitail += TY_IBUFLEN;
+			while(typtr->tyitail > typtr->tyihead) {
+				typtr->tyicursor--;
+				erase1(typtr, csrptr);
 			}
-			typtr->tyicursor = 0;
-			eputc(TY_RETURN, typtr, csrptr);
-			eputc(TY_NEWLINE, typtr, csrptr);
 			return;
 		}
 
