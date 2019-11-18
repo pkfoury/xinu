@@ -10,7 +10,7 @@ void	udp_sender(uid32 slot)
 {
 	char *buff = getmem(128);
 	while(TRUE) {
-		read(CONSOLE, buff, 128);
+		fgets(buff, 128, CONSOLE);
 		udp_send(slot, buff, 128);
 	}
 }
@@ -24,7 +24,9 @@ void	udp_receiver(uid32 slot)
 {	
 	char *received = getmem(128);
 	while(TRUE) {
-		udp_recv(slot, received, 128, 500);
-		kprintf("%s", received);
+		uint32 status = udp_recv(slot, received, 128, 500);
+		if(status != SYSERR && status != TIMEOUT) {
+			kprintf("%s", received);
+		}
 	}
 }

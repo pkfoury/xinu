@@ -53,22 +53,21 @@ uint16 chatroom(uint32 remoteip, uint32 localip)
 {
 
 	uint16 port1 = 42069;
-	uint16 port2 = 44000;
+	uint16 port2 = 44009;
 
 	uid32 slot;
-	if (remoteip > localip)
-	{
+	if (remoteip > localip) {
 		slot = udp_register(remoteip, port2, port1);
 	}
-	else
-	{
+	else {
 		slot = udp_register(remoteip, port1, port2);
 	}
 
-	if (slot == SYSERR)
-	{
+	if (slot == SYSERR){
 		return SYSERR;
 	}
+	
+	kprintf("register success. send messages below!\n");
 
 	resume(create(udp_receiver, 4096, 20, "udp_receiver", 1, slot));
 	resume(create(udp_sender, 4096, 20, "udp_sender", 1, slot));
@@ -79,8 +78,6 @@ uint16 chatroom(uint32 remoteip, uint32 localip)
 
 process main(void)
 {
-	recvclr();
-
 	kprintf("input 1 for udp_echo or 2 for chat room.\n");
 	char *input = getmem(2);
 	read(CONSOLE, input, 2);
@@ -106,14 +103,18 @@ process main(void)
 		}
 
 		kprintf("input remote ip address (dotted):\n"); // input other side's ip
-		char *remoteipdotted = getmem(32);
-		fgets(remoteipdotted, 32, CONSOLE);
-		kprintf("%s\n", remoteipdotted);
-		// remoteipdotted[strlen(remoteipdotted)-2] = '\0';
-		uint32 remoteip;
-		dot2ip(remoteipdotted, &remoteip); // change dotted to uint32
-		kprintf("localip: %u\n", localip);
-		kprintf("remoteip: %u\n", remoteip);
+		char *remoteipdotted = getmem(32); // buffer for console input
+		fgets(remoteipdotted, 32, CONSOLE); // read from console
+		remoteipdotted[strlen(remoteipdotted)-1] = '\0'; // remove newline from input
+
+		uint32 remoteip; // buffer to store converted ip
+		while(dot2ip(remoteipdotted, &remoteip) != OK) { // change dotted ip to uint32
+			kprintf("invalid ip. please try again:\n");
+			fgets(remoteipdotted, 32, CONSOLE);
+			remoteipdotted[strlen(remoteipdotted)-1] = '\0';
+		}
+		kprintf("local ip as uint: %u\n", localip);
+		kprintf("remote ip as uint: %u\n", remoteip);
 		chatroom(remoteip, localip);
 	}
 	else
