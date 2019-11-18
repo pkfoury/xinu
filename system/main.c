@@ -67,7 +67,7 @@ uint16 chatroom(uint32 remoteip, uint32 localip)
 		return SYSERR;
 	}
 	
-	kprintf("register success. send messages below!\n");
+	kprintf("register success. send messages below. send newline twice to exit.\n");
 
 	resume(create(udp_receiver, 4096, 20, "udp_receiver", 1, slot));
 	resume(create(udp_sender, 4096, 20, "udp_sender", 1, slot));
@@ -123,5 +123,10 @@ process main(void)
 		resume(create(shell, 4096, 20, "shell", 1, CONSOLE));
 	}
 
+	while (TRUE) {
+		receive();
+		sleepms(200);
+		resume(create(shell, 4096, 20, "shell", 1, CONSOLE));
+	}
 	return OK;
 }
