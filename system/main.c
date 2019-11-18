@@ -52,8 +52,8 @@ uint16 udp_echo()
 uint16 chatroom(uint32 remoteip, uint32 localip)
 {
 
-	uint16 port1 = 42069;
-	uint16 port2 = 44009;
+	uint16 port1 = 55387;
+	uint16 port2 = 55388;
 
 	uid32 slot;
 	if (remoteip > localip) {
