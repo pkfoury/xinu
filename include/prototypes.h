@@ -588,6 +588,9 @@ extern	status	udp_release(uid32);
 extern	void	udp_ntoh(struct netpacket *);
 extern	void	udp_hton(struct netpacket *);
 
+// in file udp_messaging.c
+extern	void	udp_sender(uid32);
+extern	void	udp_receiver(uid32);
 
 /* in file unsleep.c */
 extern	syscall	unsleep(pid32);
