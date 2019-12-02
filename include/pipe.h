@@ -8,4 +8,4 @@ struct pipe {
 	sid32 csem;
 };
 
-extern struct pipe *pipe;
+extern struct pipe pipe;

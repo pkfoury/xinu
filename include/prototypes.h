@@ -329,12 +329,12 @@ extern	void	pdumph(struct netpacket *);
 
 /* pipe functions */
 extern	devcall	pipeinit(void);
-extern	void	pipeopen(struct dentry *, char *, char *);
-extern	void	pipeclose(void);
-extern	void	piperead(void);
-extern	void	pipewrite(void);
-extern	void	pipegetc(void);
-extern	void	pipeputc(void);
+extern	devcall	pipeopen(struct dentry *, char *, char*);
+extern devcall pipeclose(struct dentry *);
+extern	devcall	piperead(struct dentry *, char *);
+extern devcall pipewrite(struct dentry *, char *);
+extern devcall pipegetc(struct dentry *);
+extern devcall pipeputc(struct dentry *, char *);
 
 /* in file platinit.c */
 extern	void	platinit(void);
