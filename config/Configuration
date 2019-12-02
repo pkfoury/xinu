@@ -104,6 +104,14 @@ nam:
 		-w ioerr 	-s ioerr 	-n ioerr
 		-intr ioerr
 
+/* type of pipe device */
+pipdev:
+	on none
+		-i pipeinit	-o pipeopen	-c pipeclose
+		-r	piperead	-g pipegetc	-p pipeputc
+		-w pipewrite	-s ioerr	-n ioerr
+		-intr ionull
+
 spi:
 	on top
 		-i spiinit	-o ionull	-c ionull
@@ -176,6 +184,9 @@ spi:
 
    SPI0 is spi on top csr 0x48030000
    SPI1 is spi on top csr 0x481A0000
+
+	 /* PIPE */
+	 PIPE is pipdev on none
 
 %%
 

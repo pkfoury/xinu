@@ -227,5 +227,12 @@ struct	dentry	devtab[NDEVS] =
 	  (void *)spiinit, (void *)ionull, (void *)ionull,
 	  (void *)ionull, (void *)ionull, (void *)ionull,
 	  (void *)ionull, (void *)ionull, (void *)spicontrol,
-	  (void *)0x481a0000, (void *)ionull, 0 }
+	  (void *)0x481a0000, (void *)ionull, 0 },
+
+/* PIPE is pipdev */
+	{ 30, 0, "PIPE",
+	  (void *)pipeinit, (void *)pipeopen, (void *)pipeclose,
+	  (void *)piperead, (void *)pipewrite, (void *)ioerr,
+	  (void *)pipegetc, (void *)pipeputc, (void *)ioerr,
+	  (void *)0x0, (void *)ionull, 0 }
 };
