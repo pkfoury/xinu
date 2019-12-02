@@ -17,8 +17,10 @@ devcall pipeopen(
 	semreset(pipe.psem, 1);
 	semreset(pipe.csem, 0);
 
-	pipe.head = pipe.buff;
-	pipe.tail = pipe.buff;
+	pipe.head = pipe.buf;
+	pipe.tail = pipe.buf;
+
+	pipe.open = TRUE;
 
 	return OK;
 }

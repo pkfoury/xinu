@@ -11,5 +11,11 @@ devcall pipeclose(
 	struct dentry *devptr /* Entry in device switch table	*/
 )
 {
+	if(pipe.open == FALSE)
+		return SYSERR;
+
+	pipe.tail = EOF; // place EOF on end of buffer
+	pipe.open = FALSE;
+
 	return OK;
 }

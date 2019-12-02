@@ -11,13 +11,14 @@ struct pipe pipe;
 
 devcall pipeinit() {
 
-	pipe.buff = getmem(4);
-
-	pipe.head = pipe.buff;
-	pipe.tail = pipe.buff;
 
 	pipe.psem = semcreate(1);
 	pipe.csem = semcreate(0);
+
+	pipe.head = pipe.buf;
+	pipe.tail = pipe.buf;
+
+	pipe.open = FALSE;
 
 	return OK;
 }
