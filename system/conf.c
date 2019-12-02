@@ -82,8 +82,8 @@ struct	dentry	devtab[NDEVS] =
 	  (void *)ioerr, (void *)ioerr, (void *)rdscontrol,
 	  (void *)0x0, (void *)ionull, 0 },
 
-/* RAM0 is ram */
-	{ 9, 0, "RAM0",
+/* RAMDISK is ram */
+	{ 9, 0, "RAMDISK",
 	  (void *)raminit, (void *)ramopen, (void *)ramclose,
 	  (void *)ramread, (void *)ramwrite, (void *)ioerr,
 	  (void *)ioerr, (void *)ioerr, (void *)ioerr,

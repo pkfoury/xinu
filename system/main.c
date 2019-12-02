@@ -4,7 +4,10 @@
 
 process	main(void)
 {
-	kprintf("Welcome Peter!\n");
+
+	/* Set up and empty file system on the RAMDISK device */
+
+	lfscreate(RAMDISK, 40, 20480);
 
 	/* Run the Xinu shell */
 

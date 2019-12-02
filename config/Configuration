@@ -140,7 +140,7 @@ spi:
    RDISK is rds on udp
    
    /* Define a ram disk device */
-   RAM0 is ram on mem
+   RAMDISK is ram on mem
  
    /* Define the remote file system device */
 
@@ -188,4 +188,4 @@ spi:
 #define	IRQ_ATH_MISC IRQ_HW4	/* Misc. IRQ is wired to hardware 4	*/
 #define CLKFREQ      200000000	/* 200 MHz clock			*/
 
-#define	LF_DISK_DEV	RAM0
+#define	LF_DISK_DEV	RAMDISK

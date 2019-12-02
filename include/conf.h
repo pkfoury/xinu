@@ -34,7 +34,7 @@ extern	struct	dentry	devtab[]; /* one entry per device */
 #define ETHER0               6	/* type eth      */
 #define NAMESPACE            7	/* type nam      */
 #define RDISK                8	/* type rds      */
-#define RAM0                 9	/* type ram      */
+#define RAMDISK              9	/* type ram      */
 #define RFILESYS            10	/* type rfs      */
 #define RFILE0              11	/* type rfl      */
 #define RFILE1              12	/* type rfl      */
@@ -83,4 +83,4 @@ extern	struct	dentry	devtab[]; /* one entry per device */
 #define	IRQ_ATH_MISC IRQ_HW4	/* Misc. IRQ is wired to hardware 4	*/
 #define CLKFREQ      200000000	/* 200 MHz clock			*/
 
-#define	LF_DISK_DEV	RAM0
+#define	LF_DISK_DEV	RAMDISK
