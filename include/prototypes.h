@@ -327,6 +327,15 @@ extern	int32	pci_init(void);
 extern	void	pdump(struct netpacket *);
 extern	void	pdumph(struct netpacket *);
 
+/* pipe functions */
+extern	devcall	pipeinit(void);
+extern	void	pipeopen(struct dentry *, char *, char *);
+extern	void	pipeclose(void);
+extern	void	piperead(void);
+extern	void	pipewrite(void);
+extern	void	pipegetc(void);
+extern	void	pipeputc(void);
+
 /* in file platinit.c */
 extern	void	platinit(void);
 
