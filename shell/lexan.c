@@ -90,7 +90,14 @@ int32	lexan (
 					p++;
 					continue;
 
-		    default:		toktyp[ntok] = SH_TOK_OTHER;
+				case SH_PIPE: toktyp[ntok] = SH_TOK_PIPE;
+					tokbuf[tbindex++] = ch;
+					tokbuf[tbindex++] = NULLCH;
+					ntok++;
+					p++;
+					continue;
+
+				default:		toktyp[ntok] = SH_TOK_OTHER;
 		};
 
 		/* Handle quoted string (single or double quote) */
@@ -126,7 +133,7 @@ int32	lexan (
 			&& (ch != SH_LESS)  && (ch != SH_GREATER)
 			&& (ch != SH_BLANK) && (ch != SH_TAB)
 			&& (ch != SH_AMPER) && (ch != SH_SQUOTE)
-			&& (ch != SH_DQUOTE) )	{
+			&& (ch != SH_DQUOTE) && (ch != SH_PIPE) )	{
 				tokbuf[tbindex++] = ch;
 				p++;
 		}
@@ -134,7 +141,7 @@ int32	lexan (
 		/* Report error if other token is appended */
 
 		if (       (ch == SH_SQUOTE) || (ch == SH_DQUOTE)
-			|| (ch == SH_LESS)   || (ch == SH_GREATER) ) {
+			|| (ch == SH_LESS)   || (ch == SH_GREATER) || (ch == SH_PIPE) ) {
 			return SYSERR;
 		}
 

@@ -47,6 +47,7 @@
 #define	SH_DQUOTE	'"'		/* Double quote character	*/
 #define	SH_LESS		'<'		/* Less-than character	*/
 #define	SH_GREATER	'>'		/* Greater-than character	*/
+#define SH_PIPE '|' // pipe symbol
 
 /* Token types */
 
@@ -56,6 +57,7 @@
 #define	SH_TOK_OTHER	3		/* Token other than those	*/
 					/*   listed above (e.g., an	*/
 					/*   alphanumeric string)	*/
+#define SH_TOK_PIPE 4 // pipe token
 
 /* Shell return constants */
 
