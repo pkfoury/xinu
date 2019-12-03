@@ -14,11 +14,11 @@ devcall pipeopen(
 )
 {
 
-	semreset(pipe.psem, 1);
+	semreset(pipe.psem, PIPESIZE);
 	semreset(pipe.csem, 0);
 
-	pipe.head = pipe.buf;
-	pipe.tail = pipe.buf;
+	pipe.head = 0;
+	pipe.tail = 0;
 
 	pipe.open = TRUE;
 

@@ -11,12 +11,11 @@ struct pipe pipe;
 
 devcall pipeinit() {
 
-
-	pipe.psem = semcreate(1);
+	pipe.psem = semcreate(PIPESIZE);
 	pipe.csem = semcreate(0);
 
-	pipe.head = pipe.buf;
-	pipe.tail = pipe.buf;
+	pipe.head = 0;
+	pipe.tail = 0;
 
 	pipe.open = FALSE;
 

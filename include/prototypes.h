@@ -333,8 +333,8 @@ extern	devcall	pipeopen(struct dentry *, char *, char*);
 extern devcall pipeclose(struct dentry *);
 extern	devcall	piperead(struct dentry *, char *);
 extern devcall pipewrite(struct dentry *, char *);
-extern devcall pipegetc(struct dentry *);
-extern devcall pipeputc(struct dentry *, char *);
+extern int32 pipegetc(struct dentry *);
+extern devcall pipeputc(struct dentry *, char);
 
 /* in file platinit.c */
 extern	void	platinit(void);

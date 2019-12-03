@@ -14,8 +14,11 @@ devcall pipeclose(
 	if(pipe.open == FALSE)
 		return SYSERR;
 
-	pipe.tail = EOF; // place EOF on end of buffer
 	pipe.open = FALSE;
+
+	wait(pipe.psem);
+	pipe.buf[pipe.tail] = EOF; // place EOF on end of buffer
+	signal(pipe.csem);
 
 	return OK;
 }
