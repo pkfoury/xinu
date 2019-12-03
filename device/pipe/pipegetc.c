@@ -13,6 +13,7 @@ int32 pipegetc(
 {
 	char ch; // character to return
 
+	// this causes some issue
 	// if (pipe.open == FALSE) // if buffer not opened, throw error
 	// 	return EOF;
 

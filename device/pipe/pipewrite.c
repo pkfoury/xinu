@@ -9,11 +9,16 @@
 
 devcall pipewrite(
 		struct dentry *devptr, /* Entry in device switch table	*/
-		char *byte						 // byte to deposit
+		char *buf,						 // byte to deposit
+		int32 count // number of chars to write
 )
 {
 
-	// call pipeputc N times
+	// call pipereadc count times
+	int i = 0;
+	for(; i < count; i++) {
+		pipeputc(devptr, *buf++);
+	}
 
-	return OK;
+	return buf;
 }

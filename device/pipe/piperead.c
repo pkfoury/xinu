@@ -9,11 +9,16 @@
 
 devcall piperead(
 		struct dentry *devptr, /* Entry in device switch table	*/
-		char* byte // byte to read
+		int32 *buf, // byte to read
+		int32 count // number of chars to read
 )
 {
 
-	// call pipereadc N times
+	// call pipereadc count times
+	int i = 0;
+	for(; i < count; i++) {
+		*buf++ = pipegetc(devptr);
+	}
 
-	return OK;
+	return buf;
 }

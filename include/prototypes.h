@@ -331,8 +331,8 @@ extern	void	pdumph(struct netpacket *);
 extern	devcall	pipeinit(void);
 extern	devcall	pipeopen(struct dentry *, char *, char*);
 extern devcall pipeclose(struct dentry *);
-extern	devcall	piperead(struct dentry *, char *);
-extern devcall pipewrite(struct dentry *, char *);
+extern	devcall	piperead(struct dentry *, int32 *, int32);
+extern devcall pipewrite(struct dentry *, char *, int32);
 extern int32 pipegetc(struct dentry *);
 extern devcall pipeputc(struct dentry *, char);
 
