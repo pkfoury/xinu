@@ -12,5 +12,8 @@ devcall piperead(
 		char* byte // byte to read
 )
 {
+
+	// call pipereadc N times
+
 	return OK;
 }

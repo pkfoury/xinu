@@ -1,13 +1,12 @@
 // pipe.h
-
-#define PIPESIZE 32 // one byte buffer
+#define NBYTES 1 // size of pipe buffer
 struct pipe {
 	bool8 open;
-	int32 *buf[PIPESIZE];
+	int32 *buf[NBYTES * 32];
 	int32 *head;
 	int32 *tail;
-	sid32 psem;
-	sid32 csem;
+	sid32 psem; // producer semaphore
+	sid32 csem; // consumer semaphore
 };
 
 extern struct pipe pipe;

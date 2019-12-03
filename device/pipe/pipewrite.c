@@ -12,5 +12,8 @@ devcall pipewrite(
 		char *byte						 // byte to deposit
 )
 {
+
+	// call pipeputc N times
+
 	return OK;
 }
