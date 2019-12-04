@@ -5,7 +5,7 @@
 #include "shprototypes.h"
 
 /************************************************************************/
-/* Table of Xinu shell commands and the function associated with each	
+/* Table of Xinu shell commands and the function associated with each.	
   for lab7, only builtin command is exit. */
 /************************************************************************/
 const	struct	cmdent	cmdtab[] = {
@@ -75,6 +75,7 @@ process	shell (
 					/*   input and output		*/
 	int32	i;			/* Index into array of tokens	*/
 	int32	j;			/* Index into array of commands	*/
+	int32	k;			// index of piped command
 	int32	msg;			/* Message from receive() for	*/
 					/*   child termination		*/
 	int32	tmparg;			/* Address of this var is used	*/
@@ -151,11 +152,12 @@ process	shell (
 
 		// look for pipe token, to be processed later
 		bool8 piped = FALSE;
-		int32 pipeindex = 0;
+		int32 pipeseek = 0; // index of pipe in tok[]
 
-		for(; pipeindex < ntok; pipeindex++) {
-			if(toktyp[pipeindex] == SH_TOK_PIPE) { // find pipe token
+		for(; pipeseek < ntok; pipeseek++) {
+			if(toktyp[pipeseek] == SH_TOK_PIPE) { // find pipe token
 				piped = TRUE;
+				break;
 			}
 		}
 		if (piped && ntok < 3) {
