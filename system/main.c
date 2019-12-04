@@ -8,7 +8,7 @@ local process receiver(void);
 
 process main(void)
 {
-	part1_test();
+	// part1_test();
 
 	/* Set up and empty file system on the RAMDISK device */
 	lfscreate(RAMDISK, 40, 20480);

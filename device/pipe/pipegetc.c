@@ -22,9 +22,8 @@ int32 pipegetc(
 	}
 
 	wait(pipe.csem);
-	ch = pipe.buf[pipe.head];
-	pipe.head++;
+	ch = pipe.buf[pipe.head++];
 	signal(pipe.psem);
 
-	return ch;
+	return (int32)ch;
 }

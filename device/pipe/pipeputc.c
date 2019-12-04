@@ -20,8 +20,7 @@ devcall pipeputc(
 	}
 
 	wait(pipe.psem); // wait on producer sema
-	pipe.buf[pipe.tail] = (int32)ch;
-	pipe.tail++;
+	pipe.buf[pipe.tail++] = (int32)ch;
 	signal(pipe.csem); // signal consumer sema
 
 	return OK;
