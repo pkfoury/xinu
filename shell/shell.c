@@ -272,6 +272,46 @@ process	shell (
 			continue;
 		}
 
+		// handle pipe. only non-builtin commands supported
+
+		if (piped) {
+			// get second command
+			for (k = 0; k < ncmd; k++) {
+				src = cmdtab[k].cname;
+				cmp = &tokbuf[tok[pipeseek + 1]]; // start looking after pipe token				
+				diff = FALSE;
+				while (*src != NULLCH) {
+					if (*cmp != *src) {
+						diff = TRUE;
+						break;
+					}
+					src++;
+					cmp++;
+				}
+				if (diff || (*cmp != NULLCH)) {
+					continue;
+				} else {
+					break;
+				}
+			}
+		
+			// handle command not found
+			if (k >= ncmd) {
+				fprintf(dev, "command not found\n");
+				continue;
+			}
+
+			struct cmdent cmd1 = cmdtab[j];
+			struct cmdent cmd2 = cmdtab[k];
+			kprintf("cmd1: %s\n", cmd1.cname);
+			kprintf("cmd2: %s\n", cmd2.cname);
+
+			if (cmd2.cbuiltin) {
+				kprintf("Builtin command in pipe not allowed\n");
+				continue;
+			}
+		}
+
 		/* Open files and redirect I/O if specified */
 
 		if (inname != NULL) {
