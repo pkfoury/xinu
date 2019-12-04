@@ -81,12 +81,14 @@ process	shell (
 	int32	tmparg;			/* Address of this var is used	*/
 					/*   when first creating child	*/
 					/*   process, but is replaced	*/
-	char	*src, *cmp;		/* Pointers used during name	*/
-					/*   comparison			*/
+	int32 tmparg2;
+	char *src, *cmp; /* Pointers used during name	*/
+									 /*   comparison			*/
 	bool8	diff;			/* Was difference found during	*/
 					/*   comparison			*/
 	char	*args[SHELL_MAXTOK];	/* Argument vector passed to	*/
 					/*   builtin commands		*/
+	int32 pipeindex; // index of pipe in tokbuf
 
 	/* Print shell banner and startup message */
 
@@ -152,11 +154,12 @@ process	shell (
 
 		// look for pipe token, to be processed later
 		bool8 piped = FALSE;
-		int32 pipeseek = 0; // index of pipe in tok[]
+		int32 pipetok = 0; // index of pipe in tok[]
 
-		for(; pipeseek < ntok; pipeseek++) {
-			if(toktyp[pipeseek] == SH_TOK_PIPE) { // find pipe token
+		for(; pipetok < ntok; pipetok++) {
+			if(toktyp[pipetok] == SH_TOK_PIPE) { // find pipe token
 				piped = TRUE;
+				pipeindex = tok[pipetok];
 				break;
 			}
 		}
@@ -273,12 +276,11 @@ process	shell (
 		}
 
 		// handle pipe. only non-builtin commands supported
-
 		if (piped) {
 			// get second command
 			for (k = 0; k < ncmd; k++) {
 				src = cmdtab[k].cname;
-				cmp = &tokbuf[tok[pipeseek + 1]]; // start looking after pipe token				
+				cmp = &tokbuf[tok[pipetok + 1]]; // start looking after pipe token				
 				diff = FALSE;
 				while (*src != NULLCH) {
 					if (*cmp != *src) {
@@ -303,63 +305,102 @@ process	shell (
 
 			struct cmdent cmd1 = cmdtab[j];
 			struct cmdent cmd2 = cmdtab[k];
-			kprintf("cmd1: %s\n", cmd1.cname);
-			kprintf("cmd2: %s\n", cmd2.cname);
 
 			if (cmd2.cbuiltin) {
 				kprintf("Builtin command in pipe not allowed\n");
 				continue;
 			}
-		}
 
-		/* Open files and redirect I/O if specified */
+			// kprintf("ntok %d\n", ntok);
+			// kprintf("pipetok %d\n", pipetok);
+			// kprintf("tlen %d\n", tlen);
+			// kprintf("pipeindex %d\n", pipeindex);
+			// kprintf("tok[pipetok] %d\n", tok[pipetok]);
+			// kprintf("tokbuf[pipeindex] %c\n", tokbuf[pipeindex]);
 
-		if (inname != NULL) {
-			stdinput = open(NAMESPACE,inname,"ro");
-			if (stdinput == SYSERR) {
-				fprintf(dev, SHELL_INERRMSG, inname);
+			// create piped processes
+			pid32 proc1 = create(cmd1.cfunc, SHELL_CMDSTK, SHELL_CMDPRIO, cmd1.cname, 2, ntok, &tmparg);
+			pid32 proc2 = create(cmd2.cfunc, SHELL_CMDSTK, SHELL_CMDPRIO, cmd2.cname, 2, ntok, &tmparg2);
+
+			// open pipe and set in process table
+			open(PIPE, NULL, NULL);
+			proctab[proc1].prdesc[1] = PIPE; // set stdout to PIPE
+			proctab[proc2].prdesc[0] = PIPE; // set stdin to PIPE
+
+			// add args to new processes
+			status argstatus1 = addargs(proc1, 
+				pipetok, // count of args. pipetok will be number of args before pipe
+				tok,
+				pipeindex - 1, // 0 to index of pipe - 1
+				tokbuf, 
+				&tmparg);
+
+			status argstatus2 = addargs(proc2,
+				ntok - pipetok - 1, // total - args before the pipe - 1 for the pipe itself
+				tok, // ??????
+				tlen - pipeindex, // total length of tokbuf - pipe index for len after pipe
+				&tokbuf[tok[pipetok + 1]], // start at tokbuf after pipe
+				&tmparg2);
+
+			if ((proc1 == SYSERR) || (proc2 == SYSERR) || argstatus1 == SYSERR || argstatus2 == SYSERR) {
+				fprintf(dev, SHELL_CREATMSG);
 				continue;
 			}
-		}
-		if (outname != NULL) {
-			stdoutput = open(NAMESPACE,outname,"w");
-			if (stdoutput == SYSERR) {
-				fprintf(dev, SHELL_OUTERRMSG, outname);
-				continue;
-			} else {
-				control(stdoutput, F_CTL_TRUNC, 0, 0);
+
+			resume(proc1);
+			resume(proc2);
+
+		} else {
+
+			/* Open files and redirect I/O if specified */
+
+			if (inname != NULL) {
+				stdinput = open(NAMESPACE,inname,"ro");
+				if (stdinput == SYSERR) {
+					fprintf(dev, SHELL_INERRMSG, inname);
+					continue;
+				}
 			}
-		}
+			if (outname != NULL) {
+				stdoutput = open(NAMESPACE,outname,"w");
+				if (stdoutput == SYSERR) {
+					fprintf(dev, SHELL_OUTERRMSG, outname);
+					continue;
+				} else {
+					control(stdoutput, F_CTL_TRUNC, 0, 0);
+				}
+			}
 
-		/* Spawn child thread for non-built-in commands */
+			/* Spawn child thread for non-built-in commands */
 
-		child = create(cmdtab[j].cfunc,
-			SHELL_CMDSTK, SHELL_CMDPRIO,
-			cmdtab[j].cname, 2, ntok, &tmparg);
+			child = create(cmdtab[j].cfunc,
+				SHELL_CMDSTK, SHELL_CMDPRIO,
+				cmdtab[j].cname, 2, ntok, &tmparg);
 
-		/* If creation or argument copy fails, report error */
+			/* If creation or argument copy fails, report error */
 
-		if ((child == SYSERR) ||
-		    (addargs(child, ntok, tok, tlen, tokbuf, &tmparg)
-							== SYSERR) ) {
-			fprintf(dev, SHELL_CREATMSG);
-			continue;
-		}
+			if ((child == SYSERR) ||
+					(addargs(child, ntok, tok, tlen, tokbuf, &tmparg)
+								== SYSERR) ) {
+				fprintf(dev, SHELL_CREATMSG);
+				continue;
+			}
 
-		/* Set stdinput and stdoutput in child to redirect I/O */
+			/* Set stdinput and stdoutput in child to redirect I/O */
 
-		proctab[child].prdesc[0] = stdinput;
-		proctab[child].prdesc[1] = stdoutput;
+			proctab[child].prdesc[0] = stdinput;
+			proctab[child].prdesc[1] = stdoutput;
 
-		msg = recvclr();
-		resume(child);
-		if (! backgnd) {
-			msg = receive();
-			while (msg != child) {
+			msg = recvclr();
+			resume(child);
+			if (! backgnd) {
 				msg = receive();
+				while (msg != child) {
+					msg = receive();
+				}
 			}
 		}
-    }
+	}
 
     /* Terminate the shell process by returning from the top level */
 
