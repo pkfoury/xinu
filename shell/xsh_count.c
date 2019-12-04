@@ -9,15 +9,16 @@
  */
 shellcmd xsh_count(int nargs, char *args[])
 {
-	int32	i;			/* walks through args array	*/
-
-	if ( nargs != 1 ) {
+	if (nargs != 1) {
 		fprintf(stderr, "%s: invalid arguments\n", args[0]);
 		return 1;
 	}
 
-	
-
+	int32 counter = 0;
+	while ( getc(stdin) != (char)EOF) {
+		counter++;
+	}
+	fprintf(stdout, "%d bytes were received\n", counter); 
 
 	return 0;
 }

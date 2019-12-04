@@ -20,7 +20,6 @@ shellcmd xsh_gen(int nargs, char *args[])
 	for (i = 0; i < n; i++) {
 		putc(stdout, 'c');
 	}
-	putc(stdout, '\n');
 	close(stdout);
 
 	return 0;

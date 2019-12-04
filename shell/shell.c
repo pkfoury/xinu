@@ -13,12 +13,12 @@ const	struct	cmdent	cmdtab[] = {
 	{"arp",		FALSE,	xsh_arp},
 	{"cat",		FALSE,	xsh_cat},
 	{"clear",	FALSE,	xsh_clear},
-	{"count",		TRUE,		xsh_count},
+	{"count",		FALSE,		xsh_count},
 	{"date",	FALSE,	xsh_date},
 	{"devdump",	FALSE,	xsh_devdump},
 	{"echo",	FALSE,	xsh_echo},
 	{"exit",	TRUE,	xsh_exit},
-	{"gen",		TRUE,		xsh_gen},
+	{"gen",		FALSE,		xsh_gen},
 	{"help",	FALSE,	xsh_help},
 	{"kill",	FALSE,	xsh_kill},
 	{"ls",		FALSE,	xsh_ls},
@@ -321,8 +321,8 @@ process	shell (
 			// kprintf("tokbuf[pipeindex] %c\n", tokbuf[pipeindex]);
 
 			// create piped processes
-			pid32 proc1 = create(cmd1.cfunc, SHELL_CMDSTK, SHELL_CMDPRIO, cmd1.cname, 2, ntok, &tmparg);
-			pid32 proc2 = create(cmd2.cfunc, SHELL_CMDSTK, SHELL_CMDPRIO, cmd2.cname, 2, ntok, &tmparg2);
+			pid32 proc1 = create(cmd1.cfunc, SHELL_CMDSTK, 20, cmd1.cname, 2, pipetok, &tmparg);
+			pid32 proc2 = create(cmd2.cfunc, SHELL_CMDSTK, 20, cmd2.cname, 2, ntok - pipetok - 1, &tmparg2);
 
 			// open pipe and set in process table
 			open(PIPE, NULL, NULL);
@@ -339,7 +339,8 @@ process	shell (
 
 			status argstatus2 = addargs(proc2,
 				ntok - pipetok - 1, // total - args before the pipe - 1 for the pipe itself
-				tok, // ??????
+				tok,
+				// &tok[pipetok+1], // ??????
 				tlen - pipeindex, // total length of tokbuf - pipe index for len after pipe
 				&tokbuf[tok[pipetok + 1]], // start at tokbuf after pipe
 				&tmparg2);
@@ -351,6 +352,12 @@ process	shell (
 
 			resume(proc1);
 			resume(proc2);
+
+			// wait for message back from proc2
+			msg = receive();
+			while (msg != proc2) {
+				msg = receive();
+			}
 
 		} else {
 
