@@ -5,7 +5,8 @@
 #include "shprototypes.h"
 
 /************************************************************************/
-/* Table of Xinu shell commands and the function associated with each	*/
+/* Table of Xinu shell commands and the function associated with each	
+  for lab7, only builtin command is exit. */
 /************************************************************************/
 const	struct	cmdent	cmdtab[] = {
 	{"argecho",	FALSE,	xsh_argecho},
@@ -59,9 +60,7 @@ process	shell (
 	char	buf[SHELL_BUFLEN];	/* Input line (large enough for	*/
 					/*   one line from a tty device	*/
 	int32	len;			/* Length of line read		*/
-	char	tokbuf[SHELL_BUFLEN +	/* Buffer to hold a set of	*/
-			SHELL_MAXTOK];  /* Contiguous null-terminated	*/
-					/* Strings of tokens		*/
+	char	tokbuf[SHELL_BUFLEN + SHELL_MAXTOK]; /* Buffer to hold a set of contiguous null-terminated strings of tokens		*/
 	int32	tlen;			/* Current length of all data	*/
 					/*   in array tokbuf		*/
 	int32	tok[SHELL_MAXTOK];	/* Index of each token in	*/
@@ -150,20 +149,33 @@ process	shell (
 			backgnd = FALSE;
 		}
 
+		// look for pipe token, to be processed later
+		bool8 piped = FALSE;
+		int32 pipeindex = 0;
+
+		for(; pipeindex < ntok; pipeindex++) {
+			if(toktyp[pipeindex] == SH_TOK_PIPE) { // find pipe token
+				piped = TRUE;
+			}
+		}
+		if (piped && ntok < 3) {
+			fprintf(dev, "%s\n", SHELL_SYNERRMSG);
+			continue;
+		}
 
 		/* Check for input/output redirection (default is none) */
 
 		outname = inname = NULL;
 		if ( (ntok >=3) && ( (toktyp[ntok-2] == SH_TOK_LESS)
-				   ||(toktyp[ntok-2] == SH_TOK_GREATER))){
-			if (toktyp[ntok-1] != SH_TOK_OTHER) {
+				   ||(toktyp[ntok-2] == SH_TOK_GREATER))){ // if redirection token is present
+			if (toktyp[ntok-1] != SH_TOK_OTHER) { // usage check
 				fprintf(dev,"%s\n", SHELL_SYNERRMSG);
 				continue;
 			}
 			if (toktyp[ntok-2] == SH_TOK_LESS) {
-				inname =  &tokbuf[tok[ntok-1]];
+				inname = &tokbuf[tok[ntok - 1]]; // less token = input
 			} else {
-				outname = &tokbuf[tok[ntok-1]];
+				outname = &tokbuf[tok[ntok - 1]]; // greater token = output
 			}
 			ntok -= 2;
 			tlen = tok[ntok];
@@ -196,7 +208,7 @@ process	shell (
 		/* Verify remaining tokens are type "other" */
 
 		for (i=0; i<ntok; i++) {
-			if (toktyp[i] != SH_TOK_OTHER) {
+			if (toktyp[i] != SH_TOK_OTHER && toktyp[i] != SH_TOK_PIPE) { // allow pipe to continue
 				break;
 			}
 		}
